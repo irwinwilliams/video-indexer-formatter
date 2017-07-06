@@ -1,3 +1,14 @@
 <template>
   <h1>${message}</h1>
+  <h2>Upload a file and have it processed and the lines returned.</h2>
+  <p>
+    <input type="file" files.bind="vi_output_files" />
+    <button type="button" click.trigger="parseFiles()">Parse</button>
+  </p>
+  <span>${vi_output.length} files parsed</span>
+  <div>
+    <ul style="list-style-type:none">
+      <li repeat.for="prop of vi_output">${prop}</li>
+    </ul>
+  </div>
 </template>
