@@ -5,7 +5,7 @@
     <input type="file" files.bind="vi_output_files" />
     <button type="button" click.trigger="parseFiles()">Parse</button>
   </p>
-  <span>${vi_output.length} files parsed</span>
+  <span>${vi_output.length} blocks parsed</span>
   <div>
     <ul style="list-style-type:none">
       <li repeat.for="prop of vi_output">${prop}</li>
