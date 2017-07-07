@@ -8,7 +8,10 @@
   <span>${vi_output.length} blocks parsed</span>
   <div>
     <ul style="list-style-type:none">
-      <li repeat.for="prop of vi_output">${prop}</li>
+      <li repeat.for="prop of vi_output">
+        <dt style="display:inline-block; width:100px;">${prop.timestamp}</dt>
+        <dd style="display:inline">${prop.line}</dd>
+      </li>
     </ul>
   </div>
 </template>

@@ -46,6 +46,7 @@ define('app',["exports"], function (exports) {
         App.prototype.outputVIContent = function outputVIContent(event) {
             var reader = event.currentTarget;
             var transcriptBlocks = JSON.parse(reader.result).breakdowns[0].insights.transcriptBlocks;
+            console.log(transcriptBlocks);
             var result = '';
             for (var _iterator2 = transcriptBlocks, _isArray2 = Array.isArray(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
                 var _ref2;
@@ -78,8 +79,11 @@ define('app',["exports"], function (exports) {
 
                     blockResult += line.text + ' ';
                     result += line.text + ' ';
+                    this.App.vi_output.push({
+                        "timestamp": line.adjustedTimeRange.start + ' - ' + line.adjustedTimeRange.end,
+                        "line": line.text
+                    });
                 }
-                this.App.vi_output.push(blockResult);
             }
         };
 
@@ -138,5 +142,5 @@ define('resources/index',["exports"], function (exports) {
   exports.configure = configure;
   function configure(config) {}
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template><h1>${message}</h1><h2>Upload a file and have it processed and the lines returned.</h2><p><input type=\"file\" files.bind=\"vi_output_files\"> <button type=\"button\" click.trigger=\"parseFiles()\">Parse</button></p><span>${vi_output.length} files parsed</span><div><ul style=\"list-style-type:none\"><li repeat.for=\"prop of vi_output\">${prop}</li></ul></div></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><h1>${message}</h1><h2>Upload a file and have it processed and the lines returned.</h2><p><input type=\"file\" files.bind=\"vi_output_files\"> <button type=\"button\" click.trigger=\"parseFiles()\">Parse</button></p><span>${vi_output.length} blocks parsed</span><div><ul style=\"list-style-type:none\"><li repeat.for=\"prop of vi_output\"><dt style=\"display:inline-block;width:100px\">${prop.timestamp}</dt><dd style=\"display:inline\">${prop.line}</dd></li></ul></div></template>"; });
 //# sourceMappingURL=app-bundle.js.map
