@@ -43,6 +43,18 @@ define('app',["exports"], function (exports) {
             }
         };
 
+        App.prototype.replaceAll = function replaceAll(str, find, replace) {
+            return str.replace(new RegExp(find, 'g'), replace);
+        };
+
+        App.prototype.cleanTimeStamp = function cleanTimeStamp(str) {
+            var point = str.indexOf(".");
+            var before = str.substring(0, point);
+            var after = str.substring(point);
+            after = this.replaceAll(after, '0', '');
+            return before + after;
+        };
+
         App.prototype.outputVIContent = function outputVIContent(event) {
             var reader = event.currentTarget;
             var transcriptBlocks = JSON.parse(reader.result).breakdowns[0].insights.transcriptBlocks;
@@ -79,8 +91,12 @@ define('app',["exports"], function (exports) {
 
                     blockResult += line.text + ' ';
                     result += line.text + ' ';
+                    var end = line.adjustedTimeRange.end;
+                    var start = line.adjustedTimeRange.start;
+                    end = reader.App.cleanTimeStamp(end);
+                    start = reader.App.cleanTimeStamp(start);
                     this.App.vi_output.push({
-                        "timestamp": line.adjustedTimeRange.start + ' - ' + line.adjustedTimeRange.end,
+                        "timestamp": start + ' - ' + end,
                         "line": line.text
                     });
                 }
@@ -142,5 +158,5 @@ define('resources/index',["exports"], function (exports) {
   exports.configure = configure;
   function configure(config) {}
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template><h1>${message}</h1><h2>Upload a file and have it processed and the lines returned.</h2><p><input type=\"file\" files.bind=\"vi_output_files\"> <button type=\"button\" click.trigger=\"parseFiles()\">Parse</button></p><span>${vi_output.length} blocks parsed</span><div><ul style=\"list-style-type:none\"><li repeat.for=\"prop of vi_output\"><dt style=\"display:inline-block;width:100px\">${prop.timestamp}</dt><dd style=\"display:inline\">${prop.line}</dd></li></ul></div></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><h1>${message}</h1><h2>Upload a file and have it processed and the lines returned.</h2><p><input type=\"file\" files.bind=\"vi_output_files\"> <button type=\"button\" click.trigger=\"parseFiles()\">Parse</button></p><span>${vi_output.length} blocks parsed</span><div><ul style=\"list-style-type:none\"><li repeat.for=\"prop of vi_output\"><dt style=\"display:inline-block;width:200px\">${prop.timestamp}</dt><dd style=\"display:inline\">${prop.line}</dd></li></ul></div></template>"; });
 //# sourceMappingURL=app-bundle.js.map

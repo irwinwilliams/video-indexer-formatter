@@ -15,6 +15,18 @@ export class App {
         }
     }
 
+    replaceAll(str, find, replace) {
+        return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+    cleanTimeStamp(str) {
+        var point = str.indexOf(".");
+        var before = str.substring(0, point);
+        var after = str.substring(point);
+        after = this.replaceAll(after, '0', '');
+        return before + after;
+    }
+
     outputVIContent(event) {
         let reader = event.currentTarget;
         let transcriptBlocks = JSON.parse(reader.result).breakdowns[0].insights.transcriptBlocks;
@@ -25,8 +37,12 @@ export class App {
             for (const line of block.lines) {
                 blockResult += line.text + ' ';
                 result += line.text + ' ';
+                var end = line.adjustedTimeRange.end;
+                var start = line.adjustedTimeRange.start;
+                end = reader.App.cleanTimeStamp(end);
+                start = reader.App.cleanTimeStamp(start);
                 this.App.vi_output.push({
-                    "timestamp": line.adjustedTimeRange.start + ' - ' + line.adjustedTimeRange.end,
+                    "timestamp": start + ' - ' + end,
                     "line": line.text
                 });
             }
