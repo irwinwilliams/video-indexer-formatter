@@ -24,7 +24,14 @@ export class App {
         var before = str.substring(0, point);
         var after = str.substring(point);
         after = this.replaceAll(after, '0', '');
-        return before + after;
+        var cleaned = before + after;
+        var hms = cleaned;   // your input string
+        var a = hms.split(':'); // split it at the colons
+
+        // minutes are worth 60 seconds. Hours are worth 60 minutes.
+        var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+        var jublerFormat = seconds * 10; 
+        return jublerFormat;
     }
 
     outputVIContent(event) {
@@ -42,7 +49,8 @@ export class App {
                 end = reader.App.cleanTimeStamp(end);
                 start = reader.App.cleanTimeStamp(start);
                 this.App.vi_output.push({
-                    "timestamp": start + ' - ' + end,
+                    "start": start,
+                    "end":  end,
                     "line": line.text
                 });
             }
