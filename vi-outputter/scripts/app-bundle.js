@@ -52,7 +52,12 @@ define('app',["exports"], function (exports) {
             var before = str.substring(0, point);
             var after = str.substring(point);
             after = this.replaceAll(after, '0', '');
-            return before + after;
+            var cleaned = before + after;
+            var hms = cleaned;
+            var a = hms.split(':');
+            var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
+            var jublerFormat = seconds * 10;
+            return jublerFormat;
         };
 
         App.prototype.outputVIContent = function outputVIContent(event) {
@@ -96,7 +101,8 @@ define('app',["exports"], function (exports) {
                     end = reader.App.cleanTimeStamp(end);
                     start = reader.App.cleanTimeStamp(start);
                     this.App.vi_output.push({
-                        "timestamp": start + ' - ' + end,
+                        "start": start,
+                        "end": end,
                         "line": line.text
                     });
                 }
@@ -158,5 +164,5 @@ define('resources/index',["exports"], function (exports) {
   exports.configure = configure;
   function configure(config) {}
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template><h1>${message}</h1><h2>Upload a file and have it processed and the lines returned.</h2><p><input type=\"file\" files.bind=\"vi_output_files\"> <button type=\"button\" click.trigger=\"parseFiles()\">Parse</button></p><span>${vi_output.length} blocks parsed</span><div><ul style=\"list-style-type:none\"><li repeat.for=\"prop of vi_output\"><dt style=\"display:inline-block;width:200px\">${prop.timestamp}</dt><dd style=\"display:inline\">${prop.line}</dd></li></ul></div></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><h1>${message}</h1><h2>Upload a file and have it processed and the lines returned.</h2><p><input type=\"file\" files.bind=\"vi_output_files\"> <button type=\"button\" click.trigger=\"parseFiles()\">Parse</button></p><span>${vi_output.length} blocks parsed</span><div><ul style=\"list-style-type:none\"><li repeat.for=\"prop of vi_output\"><span style=\"display:inline-block;width:100px\">[${prop.start}]</span> <span style=\"display:inline-block;width:100px\">[${prop.end}]</span> <span style=\"display:inline\">${prop.line}</span></li></ul></div></template>"; });
 //# sourceMappingURL=app-bundle.js.map
