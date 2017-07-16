@@ -39,6 +39,10 @@ export class App {
         let transcriptBlocks = JSON.parse(reader.result).breakdowns[0].insights.transcriptBlocks;
         console.log(transcriptBlocks);
         let result = '';
+
+        // Save transcribed text as XML
+        let xmlString = '<tt xmlns="http://www.w3.org/2006/10/ttaf1"><body><div xml:id="captions">';
+
         for (const block of transcriptBlocks) {
             let blockResult = '';
             for (const line of block.lines) {
@@ -46,6 +50,7 @@ export class App {
                 result += line.text + ' ';
                 var end = line.adjustedTimeRange.end;
                 var start = line.adjustedTimeRange.start;
+
                 end = reader.App.cleanTimeStamp(end);
                 start = reader.App.cleanTimeStamp(start);
                 this.App.vi_output.push({
@@ -53,7 +58,14 @@ export class App {
                     "end": end,
                     "line": line.text
                 });
+
+                // Build XML output
+                xmlString += '<p begin="' + start + '" end="' + end + '">' + line.text + '</p>';
             }
+            xmlString += '</div></body></tt>';
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(xmlString, "text/xml");
+            document.getElementById("xml-demo").innerHTML = xmlDoc.getElementsByTagName("tt")[0].childNodes[0].nodeValue;
             //this.App.vi_output.push(blockResult);
         }
     }
