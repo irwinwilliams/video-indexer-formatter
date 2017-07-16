@@ -56,7 +56,7 @@ define('app',["exports"], function (exports) {
             var hms = cleaned;
             var a = hms.split(':');
             var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
-            var jublerFormat = seconds * 10;
+            var jublerFormat = Math.round(seconds * 10);
             return jublerFormat;
         };
 
